@@ -4,512 +4,273 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduMerge - Text Editor Built for Students</title>
+
+    <!-- Google Fonts (Portfolio Standard) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* =========================================
+           1. CORE VARIABLES & RESET (PORTFOLIO THEME)
+           ========================================= */
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #0a0a0a;
+            --primary: #667eea;
+            --primary-dim: rgba(102, 126, 234, 0.1);
+            --secondary: #764ba2;
+            --accent: #4ecdc4;
+            --accent-glow: rgba(78, 205, 196, 0.4);
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass: rgba(20, 20, 20, 0.6);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        html { scroll-behavior: smooth; font-size: 16px; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
             overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
         }
 
-        /* Navigation */
-        nav {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
 
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 2. UTILITIES */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #fff; font-family: var(--font-display); }
 
-        nav .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-        }
+        /* 3. CURSOR */
+        .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--accent); }
+        .cursor-outline { width: 40px; height: 40px; border: 1px solid var(--accent); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+        body.hovering .cursor-outline { width: 60px; height: 60px; background-color: rgba(78, 205, 196, 0.1); border-color: transparent; }
 
-        nav .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
+        /* 4. NAV ADAPTER */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 1.5rem 0; z-index: 100;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(15px); border-bottom: var(--glass-border); box-shadow: none;
         }
-
-        nav .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+            font-family: var(--font-code); transition: color 0.3s ease;
         }
+        .nav-links a:hover { color: var(--accent); }
 
-        nav .nav-links a:hover {
-            opacity: 0.8;
-        }
-
-        /* Hero Section */
+        /* 5. HERO ADAPTER */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: transparent; /* Override old gradient */
             color: white;
             padding: 120px 2rem 80px;
             text-align: center;
-            min-height: 100vh;
+            min-height: 80vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
+        #starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; }
+        .hero h1 { font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 1.5rem; animation: fadeInUp 1s ease; }
+        .hero p { font-size: 1.3rem; margin-bottom: 2rem; color: var(--text-muted); animation: fadeInUp 1s ease 0.2s backwards; }
 
-        .hero-content {
-            max-width: 800px;
-        }
+        /* Buttons */
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; animation: fadeInUp 1s ease 0.4s backwards; flex-wrap: wrap; }
+        .btn { padding: 1rem 2.5rem; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; text-decoration: none; display: inline-block; font-family: var(--font-code); border: 1px solid transparent; }
+        .btn-primary { background: var(--primary); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-secondary { background: transparent; color: white; border: 1px solid var(--border-color); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2); border-color: var(--accent); color: #fff; }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 1s ease;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-            animation: fadeInUp 1s ease 0.2s backwards;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            animation: fadeInUp 1s ease 0.4s backwards;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: white;
-            color: #667eea;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        section {
-            padding: 80px 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #333;
-        }
-
-        /* Features Section */
-        .features {
-            background: #f8f9fa;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
+        /* 6. FEATURES ADAPTER */
+        section { padding: 80px 0; } /* Reset standard padding */
+        .features { background: transparent; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
         .feature-card {
-            background: white;
+            background: var(--bg-panel);
             padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+            transition: transform 0.3s, border-color 0.3s;
         }
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .feature-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #fff; font-family: var(--font-display); }
+        .feature-card p { color: var(--text-muted); line-height: 1.8; }
 
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #667eea;
-        }
-
-        .feature-card p {
-            color: #666;
-            line-height: 1.8;
-        }
-
-        /* Screenshots Section */
-        .screenshots {
-            background: white;
-        }
-
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
+        /* 7. SCREENSHOTS ADAPTER */
+        .screenshots { background: transparent; }
+        .screenshot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-top: 3rem; }
         .screenshot-card {
-            background: #f8f9fa;
-            border-radius: 15px;
+            background: var(--bg-panel);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+            transition: transform 0.3s, border-color 0.3s;
         }
-
-        .screenshot-card:hover {
-            transform: scale(1.02);
-        }
-
+        .screenshot-card:hover { transform: scale(1.02); border-color: var(--primary); }
         .screenshot-placeholder {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: rgba(102, 126, 234, 0.1);
             height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent); font-size: 3rem;
+            border-bottom: 1px solid var(--border-color);
         }
+        .screenshot-card h3 { padding: 1.5rem; color: #fff; font-size: 1.3rem; font-family: var(--font-display); }
+        .screenshot-card p { padding: 0 1.5rem 1.5rem; color: var(--text-muted); }
 
-        .screenshot-card h3 {
-            padding: 1.5rem;
-            color: #667eea;
-            font-size: 1.3rem;
-        }
-
-        .screenshot-card p {
-            padding: 0 1.5rem 1.5rem;
-            color: #666;
-        }
-
-        /* Comparison Table */
-        .comparison {
-            background: #f8f9fa;
-        }
-
+        /* 8. COMPARISON TABLE ADAPTER */
+        .comparison { background: transparent; }
         table {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%; max-width: 900px; margin: 0 auto;
+            background: var(--bg-panel);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden; box-shadow: none; border-collapse: collapse;
         }
+        th, td { padding: 1.5rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background: rgba(102, 126, 234, 0.1); color: var(--accent); font-weight: 600; font-family: var(--font-code); border-bottom: 1px solid var(--border-color); }
+        tr { border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+        td { color: var(--text-muted); }
+        td:first-child { font-weight: 600; color: #fff; font-family: var(--font-display); }
 
-        th, td {
-            padding: 1.5rem;
-            text-align: left;
-        }
-
-        th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            font-weight: 600;
-        }
-
-        tr {
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        td:first-child {
-            font-weight: 600;
-            color: #333;
-        }
-
-        /* FAQ Section */
-        .faq {
-            background: white;
-        }
-
-        .faq-list {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
+        /* 9. FAQ ADAPTER */
+        .faq { background: transparent; }
         .faq-item {
-            background: #f8f9fa;
+            background: var(--bg-panel);
             margin-bottom: 1.5rem;
             border-radius: 10px;
             padding: 1.5rem;
-            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, border-color 0.3s;
         }
+        .faq-item:hover { transform: translateX(5px); border-color: var(--primary); }
+        .faq-question { color: #fff; font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; font-family: var(--font-display); }
+        .faq-answer { color: var(--text-muted); line-height: 1.8; }
 
-        .faq-item:hover {
-            transform: translateX(5px);
-        }
-
-        .faq-question {
-            color: #667eea;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .faq-answer {
-            color: #666;
-            line-height: 1.8;
-        }
-
-        /* Use Cases Section */
-        .use-cases {
-            background: white;
-        }
-
-        .use-case-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
+        /* 10. USE CASES ADAPTER */
+        .use-cases { background: transparent; }
         .use-case {
             padding: 2rem;
-            border-left: 4px solid #667eea;
-            background: #f8f9fa;
-            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            background: var(--bg-panel);
+            border-radius: 8px; border: 1px solid var(--border-color); border-left-width: 4px;
         }
+        .use-case h3 { color: #fff; margin-bottom: 1rem; font-size: 1.3rem; font-family: var(--font-display); }
+        .use-case ul { list-style: none; padding-left: 0; }
+        .use-case li { padding: 0.5rem 0; color: var(--text-muted); }
+        .use-case li:before { content: "> "; color: var(--accent); font-weight: bold; margin-right: 0.5rem; font-family: var(--font-code); }
 
-        .use-case h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        .use-case ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .use-case li {
-            padding: 0.5rem 0;
-            color: #666;
-        }
-
-        .use-case li:before {
-            content: "✓ ";
-            color: #667eea;
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
-
-        /* Demo Section */
-        .demo {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-        }
-
+        /* 11. DEMO ADAPTER */
+        .demo { background: transparent; color: white; text-align: center; }
         .demo-video {
-            max-width: 900px;
-            margin: 2rem auto;
-            background: rgba(255,255,255,0.1);
-            padding: 2rem;
-            border-radius: 15px;
+            max-width: 900px; margin: 2rem auto;
+            background: rgba(255,255,255,0.02);
+            padding: 2rem; border-radius: 15px;
+            border: 1px solid var(--border-color);
             backdrop-filter: blur(10px);
         }
+        .demo-placeholder { background: rgba(0,0,0,0.5); padding: 100px; border-radius: 10px; font-size: 1.2rem; color: var(--text-muted); }
 
-        .demo-placeholder {
-            background: rgba(0,0,0,0.3);
-            padding: 100px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-        }
-
-        /* Download Section */
-        .download {
-            background: #1a1a2e;
-            color: white;
-            text-align: center;
-        }
-
+        /* 12. DOWNLOAD ADAPTER */
+        .download { background: transparent; color: white; text-align: center; }
         .download-card {
-            background: #16213e;
-            padding: 3rem;
-            border-radius: 15px;
-            max-width: 700px;
-            margin: 2rem auto;
-            transition: transform 0.3s;
+            background: var(--bg-panel);
+            padding: 3rem; border-radius: 15px;
+            max-width: 700px; margin: 2rem auto;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, border-color 0.3s;
         }
-
-        .download-card:hover {
-            transform: scale(1.02);
-        }
-
-        .download-card h3 {
-            margin-bottom: 1.5rem;
-            color: #667eea;
-            font-size: 2rem;
-        }
-
-        .download-card p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+        .download-card:hover { transform: scale(1.02); border-color: var(--accent); }
+        .download-card h3 { margin-bottom: 1.5rem; color: #fff; font-size: 2rem; font-family: var(--font-display); }
+        .download-card p { margin-bottom: 1.5rem; font-size: 1.1rem; opacity: 0.9; color: var(--text-muted); }
 
         .code-box {
-            background: rgba(0,0,0,0.4);
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: left;
-            margin: 1.5rem 0;
-            border: 1px solid rgba(102, 126, 234, 0.3);
+            background: #000;
+            padding: 1.5rem; border-radius: 10px;
+            text-align: left; margin: 1.5rem 0;
+            border: 1px solid var(--border-color);
         }
-
-        .code-box code {
-            color: #a6e3a1;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            display: block;
-            line-height: 1.8;
-        }
+        .code-box code { color: var(--accent); font-family: var(--font-code); font-size: 0.9rem; display: block; line-height: 1.8; }
 
         .requirements {
             background: rgba(102, 126, 234, 0.1);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
+            padding: 1rem; border-radius: 8px;
+            margin: 1.5rem 0; font-size: 0.95rem;
+            color: #fff; border: 1px solid rgba(102, 126, 234, 0.2);
         }
 
-        /* Footer */
+        /* 13. FOOTER ADAPTER */
         footer {
-            background: #0f0f1e;
-            color: white;
-            padding: 3rem 2rem 1rem;
-            text-align: center;
+            background: transparent;
+            color: white; padding: 3rem 2rem 1rem;
+            text-align: center; border-top: 1px solid var(--border-color); margin-top: 4rem;
         }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: #667eea;
-        }
+        .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; font-family: var(--font-code); }
+        .footer-links a:hover { color: var(--accent); }
+        footer p { color: var(--text-muted); }
 
         /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            nav .nav-links {
-                display: none;
-            }
-
-            .features-grid, .use-case-grid, .screenshot-grid {
-                grid-template-columns: 1fr;
-            }
-
-            table {
-                font-size: 0.9rem;
-            }
-
-            th, td {
-                padding: 1rem;
-            }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .cta-buttons { flex-direction: column; }
+            .nav-links { display: none; } /* Keep integrated nav logic */
+            .features-grid, .use-case-grid, .screenshot-grid { grid-template-columns: 1fr; }
+            table { font-size: 0.8rem; }
+            th, td { padding: 1rem 0.5rem; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
     <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <a href="#" class="logo">📝 EduMerge</a>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span style="color: var(--primary);">📝</span> EduMerge
+            </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#screenshots">Screenshots</a></li>
                 <li><a href="https://aksweb.me/EduMerge-Documentation" target="_blank">Documentation</a></li>
                 <li><a href="#download">Download</a></li>
+                <li><a href="https://aksweb.me" target="_blank">Back to Home</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
+        <canvas id="starfield"></canvas>
         <div class="hero-content">
             <h1>Text Editor Built for Students</h1>
             <p>Create, edit, and automate documents with powerful mail merge capabilities. EduMerge combines simplicity with advanced features—perfect for students and educators.</p>
@@ -586,8 +347,8 @@
                     <p>Built-in table viewer for managing recipient data with search and pagination.</p>
                 </div>
             </div>
-            <p style="text-align: center; margin-top: 2rem; color: #666;">
-                <em>Screenshots coming soon! Meanwhile, <a href="#download" style="color: #667eea;">download and try it yourself</a></em>
+            <p style="text-align: center; margin-top: 2rem; color: var(--text-muted);">
+                <em>Screenshots coming soon! Meanwhile, <a href="#download" style="color: var(--accent);">download and try it yourself</a></em>
             </p>
         </div>
     </section>
@@ -721,7 +482,7 @@
     <!-- Demo Section -->
     <section id="demo" class="demo">
         <div class="container">
-            <h2 class="section-title" style="color: white;">Watch a Demo</h2>
+            <h2 class="section-title">Watch a Demo</h2>
             <div class="demo-video">
                 <div class="demo-placeholder">
                     📹 Demo video coming soon!<br>
@@ -734,7 +495,7 @@
     <!-- Download Section -->
     <section id="download" class="download">
         <div class="container">
-            <h2 class="section-title" style="color: white;">Ready to Get Started?</h2>
+            <h2 class="section-title">Ready to Get Started?</h2>
             <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">
                 EduMerge is completely free and open-source. Download and run with Python.
             </p>
@@ -770,7 +531,7 @@
                 </div>
 
                 <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
-                    💡 <strong>Troubleshooting:</strong> If you encounter issues, run <code style="background: rgba(0,0,0,0.3); padding: 0.2rem 0.5rem; border-radius: 3px;">python diagnostics.py</code> after restarting your terminal
+                    💡 <strong>Troubleshooting:</strong> If you encounter issues, run <code style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 3px; font-family: var(--font-code);">python diagnostics.py</code> after restarting your terminal
                 </p>
             </div>
         </div>
@@ -788,9 +549,58 @@
             </div>
             <p style="opacity: 0.7;">&copy; 2025 EduMerge. Built for Student Hackpad 2025.</p>
             <p style="opacity: 0.5; font-size: 0.9rem; margin-top: 1rem;">
-                Made with ❤️ by <a href="https://github.com/aksgamigg" target="_blank" style="color: #667eea; text-decoration: none;">Akshaj Goel</a>
+                Made with ❤️ by <a href="https://github.com/aksgamigg" target="_blank" style="color: var(--accent); text-decoration: none;">Akshaj Goel</a>
             </p>
         </div>
     </footer>
+
+    <!-- Scripts: Cursor & Starfield -->
+    <script>
+        /* 1. STARFIELD ANIMATION */
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let width, height, stars = [];
+        function initCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            stars = [];
+            const numStars = Math.floor(width * height / 4000);
+            for(let i=0; i<numStars; i++) {
+                stars.push({
+                    x: Math.random()*width, y: Math.random()*height,
+                    size: Math.random()*1.5, opacity: Math.random(),
+                    speed: Math.random()*0.5+0.1
+                });
+            }
+        }
+        function animateStars() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = "white";
+            stars.forEach(star => {
+                ctx.globalAlpha = star.opacity;
+                ctx.beginPath(); ctx.arc(star.x, star.y, star.size, 0, Math.PI*2); ctx.fill();
+                star.y -= star.speed;
+                if(star.y<0) { star.y = height; star.x = Math.random()*width; }
+            });
+            requestAnimationFrame(animateStars);
+        }
+        window.addEventListener('resize', initCanvas);
+        initCanvas(); animateStars();
+
+        /* 2. CUSTOM CURSOR */
+        const cursorDot = document.getElementById("cursor-dot");
+        const cursorOutline = document.getElementById("cursor-outline");
+        window.addEventListener("mousemove", function (e) {
+            const posX = e.clientX; const posY = e.clientY;
+            cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
+        });
+        document.querySelectorAll('a, button, .feature-card, .screenshot-card, .download-card').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+    </script>
 </body>
 </html>
