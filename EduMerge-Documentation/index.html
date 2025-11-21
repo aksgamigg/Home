@@ -4,118 +4,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduMerge Documentation</title>
+
+    <!-- Google Fonts (Portfolio Standard) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* =========================================
+           1. CORE VARIABLES & RESET (PORTFOLIO THEME)
+           ========================================= */
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #0a0a0a;
+            --primary: #667eea;
+            --primary-dim: rgba(102, 126, 234, 0.1);
+            --secondary: #764ba2;
+            --accent: #4ecdc4;
+            --accent-glow: rgba(78, 205, 196, 0.4);
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass: rgba(20, 20, 20, 0.6);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        html { scroll-behavior: smooth; font-size: 16px; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
             line-height: 1.7;
-            color: #333;
-            background: #f8f9fa;
+            min-height: 100vh;
         }
 
-        /* Sidebar Navigation */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
+
+        /* 2. UTILITIES */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+
+        /* 3. CURSOR */
+        .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--accent); }
+        .cursor-outline { width: 40px; height: 40px; border: 1px solid var(--accent); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+        body.hovering .cursor-outline { width: 60px; height: 60px; background-color: rgba(78, 205, 196, 0.1); border-color: transparent; }
+
+        /* 4. SIDEBAR ADAPTER */
         .sidebar {
             position: fixed;
             left: 0;
             top: 0;
             width: 280px;
             height: 100vh;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: rgba(10, 10, 10, 0.95); /* bg-panel */
+            color: var(--text-main);
             padding: 2rem;
             overflow-y: auto;
             z-index: 1000;
+            border-right: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
         }
 
         .sidebar h2 {
+            font-family: var(--font-display);
             font-size: 1.5rem;
             margin-bottom: 2rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(255,255,255,0.3);
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-color);
+            color: #fff;
+            text-shadow: none;
             font-weight: 700;
         }
 
         .sidebar nav a {
             display: block;
-            color: white;
+            color: var(--text-muted);
             text-decoration: none;
             padding: 0.8rem 1rem;
             margin-bottom: 0.5rem;
             border-radius: 8px;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-size: 0.95rem;
+            font-family: var(--font-code);
         }
 
         .sidebar nav a:hover {
-            background: rgba(255,255,255,0.2);
+            background: var(--primary-dim);
+            color: var(--accent);
         }
 
-        /* Main Content */
+        /* 5. MAIN CONTENT ADAPTER */
         .content {
             margin-left: 280px;
             padding: 3rem;
             max-width: 1000px;
+            position: relative;
         }
 
+        /* 6. HEADER ADAPTER */
         header {
-            background: white;
+            background: var(--bg-panel);
             padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            box-shadow: none;
             margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
         }
 
         header h1 {
+            font-family: var(--font-display);
             font-size: 3rem;
-            color: #667eea;
+            color: #fff;
             margin-bottom: 1rem;
         }
 
         header p {
             font-size: 1.2rem;
-            color: #666;
+            color: var(--text-muted);
         }
 
+        /* 7. SECTION ADAPTER */
         section {
-            background: white;
+            background: var(--bg-panel);
             padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            box-shadow: none;
             margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s;
+        }
+
+        section:hover {
+            border-color: var(--primary);
         }
 
         h2 {
+            font-family: var(--font-display);
             font-size: 2rem;
-            color: #667eea;
+            color: #fff;
             margin-bottom: 1.5rem;
             padding-bottom: 0.5rem;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 1px solid var(--border-color);
         }
 
         h3 {
+            font-family: var(--font-display);
             font-size: 1.5rem;
-            color: #764ba2;
+            color: var(--accent);
             margin-top: 2rem;
             margin-bottom: 1rem;
         }
 
         h4 {
+            font-family: var(--font-main);
             font-size: 1.2rem;
-            color: #555;
+            color: #fff;
             margin-top: 1.5rem;
             margin-bottom: 0.8rem;
+            font-weight: 600;
         }
 
         h5 {
+            font-family: var(--font-code);
             font-size: 1.1rem;
-            color: #666;
+            color: var(--text-muted);
             margin-top: 1rem;
             margin-bottom: 0.6rem;
         }
@@ -123,43 +195,42 @@
         p {
             margin-bottom: 1rem;
             line-height: 1.8;
+            color: var(--text-main);
         }
 
+        /* 8. CODE ADAPTER */
         code {
-            background: #f4f4f4;
+            background: rgba(255, 255, 255, 0.1);
             padding: 0.2rem 0.5rem;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            color: #e74c3c;
+            border-radius: 4px;
+            font-family: var(--font-code);
+            color: var(--accent);
             font-size: 0.9em;
         }
 
         pre {
-            background: #1e1e1e;
-            color: #a6e3a1;
+            background: #000;
+            color: #e0e0e0;
             padding: 1.5rem;
             border-radius: 8px;
             overflow-x: auto;
             margin: 1.5rem 0;
-            border-left: 4px solid #667eea;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary);
         }
 
         pre code {
             background: none;
-            color: #a6e3a1;
+            color: inherit;
             padding: 0;
         }
 
-        ul, ol {
-            margin-left: 2rem;
-            margin-bottom: 1.5rem;
-        }
+        /* 9. LIST ADAPTER */
+        ul, ol { margin-left: 2rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+        li { margin-bottom: 0.8rem; line-height: 1.7; }
+        strong { color: #fff; }
 
-        li {
-            margin-bottom: 0.8rem;
-            line-height: 1.7;
-        }
-
+        /* 10. FEATURE GRID ADAPTER */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -168,79 +239,121 @@
         }
 
         .feature-card {
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.03);
             padding: 1.5rem;
             border-radius: 10px;
-            border-left: 4px solid #667eea;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .feature-card h4 {
-            color: #667eea;
+            color: #fff;
             margin-top: 0;
+            font-family: var(--font-display);
         }
 
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* 11. UI ELEMENTS ADAPTER */
         .keyboard-shortcut {
             display: inline-block;
-            background: #667eea;
-            color: white;
+            background: rgba(102, 126, 234, 0.2);
+            color: var(--accent);
             padding: 0.3rem 0.8rem;
             border-radius: 5px;
-            font-family: monospace;
+            font-family: var(--font-code);
             font-size: 0.9em;
             margin: 0.2rem;
+            border: 1px solid rgba(78, 205, 196, 0.3);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 1.5rem 0;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th, td {
             padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid var(--border-color);
         }
 
         th {
-            background: #667eea;
-            color: white;
+            background: rgba(102, 126, 234, 0.1);
+            color: #fff;
             font-weight: 600;
+            font-family: var(--font-display);
         }
 
         tr:hover {
-            background: #f8f9fa;
+            background: rgba(255,255,255,0.03);
         }
 
+        td { color: var(--text-muted); }
+
+        /* 12. ALERTS ADAPTER */
         .warning {
-            background: #fff3cd;
+            background: rgba(255, 193, 7, 0.05);
             border-left: 4px solid #ffc107;
             padding: 1rem;
             border-radius: 5px;
             margin: 1.5rem 0;
+            color: var(--text-muted);
         }
+        .warning strong { color: #ffc107; }
 
         .tip {
-            background: #d1ecf1;
-            border-left: 4px solid #17a2b8;
+            background: rgba(23, 162, 184, 0.05);
+            border-left: 4px solid var(--accent);
             padding: 1rem;
             border-radius: 5px;
             margin: 1.5rem 0;
+            color: var(--text-muted);
         }
+        .tip strong { color: var(--accent); }
 
         .success {
-            background: #d4edda;
+            background: rgba(40, 167, 69, 0.05);
             border-left: 4px solid #28a745;
             padding: 1rem;
             border-radius: 5px;
             margin: 1.5rem 0;
+            color: var(--text-muted);
         }
+        .success strong { color: #28a745; }
 
+        /* 13. FOOTER ADAPTER */
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .sidebar {
                 position: relative;
                 width: 100%;
                 height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
             }
 
             .content {
@@ -255,6 +368,10 @@
     </style>
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <h2>📝 EduMerge Docs</h2>
@@ -268,6 +385,7 @@
             <a href="#troubleshooting">Troubleshooting</a>
             <a href="#advanced">Advanced Features</a>
             <a href="#api-reference">API Reference</a>
+            <a href="https://aksweb.me" target="_blank" style="margin-top: 2rem; color: var(--accent);">← Back to Home</a>
         </nav>
     </div>
 
@@ -530,7 +648,7 @@ cd EduMerge</code></pre>
 
 Congratulations on your excellent performance this semester!
 
-We are pleased to inform you, [name], that you have been selected 
+We are pleased to inform you, [name], that you have been selected
 for the Academic Excellence Award.
 
 Best regards,
@@ -891,10 +1009,34 @@ exit_confirmation()
 show_exit_confirmation(callback_function)</code></pre>
         </section>
 
-        <footer style="text-align: center; padding: 3rem 0; color: #999;">
-            <p>EduMerge Documentation • Made with ❤️ by <a href="https://github.com/aksgamigg" style="color: #667eea;">Akshaj Goel</a></p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Need help? <a href="https://github.com/aksgamigg/EduMerge/issues" style="color: #667eea;">Report an issue</a></p>
+        <footer>
+            <p>EduMerge Documentation • Made with ❤️ by <a href="https://github.com/aksgamigg">Akshaj Goel</a></p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Need help? <a href="https://github.com/aksgamigg/EduMerge/issues">Report an issue</a></p>
         </footer>
     </div>
+
+    <!-- Script: Cursor Logic -->
+    <script>
+        const cursorDot = document.getElementById("cursor-dot");
+        const cursorOutline = document.getElementById("cursor-outline");
+
+        window.addEventListener("mousemove", function (e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        document.querySelectorAll('a, button, .feature-card').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+    </script>
 </body>
 </html>
