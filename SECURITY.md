@@ -47,4 +47,4 @@ I pledge not to pursue legal action against researchers who:
 *   Report the vulnerability to me directly and give me a reasonable time to fix it before making it public.
 
 ---
-*Policy last updated: November 2025*
+*Policy last updated: 26 November 2025*
