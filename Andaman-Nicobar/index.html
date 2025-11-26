@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flora &amp; Fauna – Andaman &amp; Nicobar</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg: #050507;
+            --bg-soft: rgba(10, 10, 18, 0.9);
+            --card-bg: rgba(15, 15, 30, 0.9);
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.16);
+            /* brighter accents */
+            --accent: #ff6bcb;
+            --accent-2: #40f8ff;
+            --accent-3: #ffe66d;
+            --text-main: #f5f5ff;
+            --text-muted: #9ca3af;
+            --danger: #ff4d6a;
+            --safe: #4ade80;
+            --shadow-glow: 0 0 30px rgba(64, 248, 255, 0.4);
+            --radius-lg: 18px;
+            --radius-pill: 999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Hide default cursor */
+        }
+
+        html, body {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, #101020 0, #050507 45%, #020306 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-2), var(--accent));
+            border-radius: 999px;
+            border: 2px solid #020617;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #7af3ff, #ff8dd8);
+        }
+
+        /* Starfield background */
+        canvas#starfield {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .noise-overlay {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            opacity: 0.08;
+            z-index: -1;
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+            mix-blend-mode: soft-light;
+        }
+
+        /* Custom cursor (fixed alignment) */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 9999;
+            transform: translate(-50%, -50%); /* Centers the element on coords */
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-2);
+            box-shadow: 0 0 10px rgba(64, 248, 255, 0.9);
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            transition: width 0.2s, height 0.2s, border-color 0.2s;
+        }
+
+        body.hovering .cursor-outline {
+            width: 60px;
+            height: 60px;
+            border-color: var(--accent);
+            background: rgba(255, 107, 203, 0.05);
+        }
+
+        /* Layout */
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.25rem 1.25rem 3rem;
+        }
+
+        /* PERMANENT (STICKY) HEADER */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            
+            /* Sticky logic */
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+            
+            /* Glass effect */
+            background: rgba(5, 5, 7, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            
+            /* Styling */
+            padding: 0.75rem 1.25rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+        }
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 0.4rem;
+            font-family: "Space Grotesk", system-ui, sans-serif;
+            letter-spacing: 0.06em;
+        }
+
+        .logo-tag {
+            color: var(--accent-2);
+            font-size: 1.4rem; /* slightly smaller for sticky header */
+        }
+
+        .logo-text {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        nav a {
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border: 1px solid transparent;
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        nav a span.dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent-3);
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--text-main);
+            border-color: var(--border-soft);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-home {
+            background: linear-gradient(120deg, var(--accent), var(--accent-2));
+            color: #020617;
+            border-radius: var(--radius-pill);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 0 22px rgba(255, 107, 203, 0.55);
+        }
+
+        .btn-home:hover {
+            filter: brightness(1.07);
+        }
+
+        /* Hero */
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+            gap: 1.75rem;
+            align-items: center;
+            padding: 1.7rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-soft);
+            background:
+                radial-gradient(circle at top left, rgba(255, 107, 203, 0.14), transparent 60%),
+                radial-gradient(circle at bottom right, rgba(64, 248, 255, 0.12), transparent 55%),
+                var(--bg-soft);
+            box-shadow: var(--shadow-glow);
+            margin-bottom: 2.25rem;
+            /* Ensure content goes under header properly */
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(15, 23, 42, 0.75);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.9rem;
+        }
+
+        .hero-kicker span.badge {
+            padding: 0.08rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.45);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .hero-title {
+            font-family: "Space Grotesk", system-ui, sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.9rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            margin-bottom: 0.55rem;
+        }
+
+        .hero-title span.gradient {
+            background: linear-gradient(120deg, #ff9f9a, #ffe66d, #40f8ff);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-sub {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 33rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.8rem;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            background: rgba(15, 23, 42, 0.8);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .meta-pill strong {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .hero-visual {
+            position: relative;
+            overflow: hidden;
+            border-radius: 22px;
+            border: 1px solid var(--border-strong);
+            background: radial-gradient(circle at top, rgba(64, 248, 255, 0.2), transparent 60%),
+                        radial-gradient(circle at bottom, rgba(255, 107, 203, 0.28), transparent 65%),
+                        #020617;
+            min-height: 230px;
+        }
+
+        .hero-grid {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 0.9rem;
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 0.7rem;
+        }
+
+        .hero-img-main,
+        .hero-img-side {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background: #020617;
+            box-shadow: 0 0 24px rgba(15, 23, 42, 0.8);
+        }
+
+        .hero-img-main img,
+        .hero-img-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0.95;
+        }
+
+        .hero-tag {
+            position: absolute;
+            left: 0.65rem;
+            bottom: 0.6rem;
+            padding: 0.18rem 0.6rem;
+            font-size: 0.68rem;
+            border-radius: var(--radius-pill);
+            background: rgba(15, 23, 42, 0.83);
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            color: var(--text-muted);
+        }
+
+        .hero-tag strong {
+            color: var(--accent-3);
+        }
+
+        /* Panels & Tabs */
+        .panel {
+            border-radius: 24px;
+            border: 1px solid var(--border-soft);
+            background: rgba(10, 12, 25, 0.95);
+            padding: 1.5rem 1.4rem 1.4rem;
+            margin-bottom: 2rem;
+            scroll-margin-top: 120px; /* Offset for sticky header */
+        }
+
+        .panel-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 0.8rem;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .panel-title {
+            font-family: "Space Grotesk", system-ui, sans-serif;
+            font-size: 1.3rem;
+        }
+
+        .panel-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tab-buttons {
+            display: inline-flex;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: var(--radius-pill);
+            padding: 0.18rem;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+        }
+
+        .tab-buttons button {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            padding: 0.35rem 0.85rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+        }
+
+        .tab-buttons button.active {
+            background: linear-gradient(135deg, rgba(255, 107, 203, 0.16), rgba(64, 248, 255, 0.2));
+            color: var(--text-main);
+        }
+
+        .tab-content {
+            display: none;
+            gap: 1.15rem;
+        }
+
+        .tab-content.active {
+            display: grid;
+        }
+
+        .tab-content.grid-2 {
+            grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.2fr);
+        }
+
+        .tab-text h3 {
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .tagline {
+            font-size: 0.8rem;
+            color: var(--accent-2);
+            margin-bottom: 0.6rem;
+        }
+
+        .tab-text p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 0.6rem;
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.4rem;
+        }
+
+        .pill {
+            font-size: 0.75rem;
+            border-radius: var(--radius-pill);
+            padding: 0.22rem 0.75rem;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            color: var(--text-muted);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .pill.em {
+            border-color: rgba(56, 189, 248, 0.8);
+            color: #e0f2fe;
+        }
+
+        .pill.danger {
+            border-color: rgba(248, 113, 113, 0.9);
+            color: #fecaca;
+        }
+
+        .mini-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .mini-label span {
+            color: var(--accent-3);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.85rem;
+        }
+
+        .image-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            background: #020617;
+            min-height: 110px;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease-out, opacity 0.3s ease-out;
+        }
+
+        .image-card:hover img {
+            transform: scale(1.06);
+            opacity: 0.95;
+        }
+
+        .chip {
+            position: absolute;
+            left: 0.55rem;
+            bottom: 0.5rem;
+            padding: 0.16rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+
+        .chip strong {
+            color: var(--accent-2);
+        }
+
+        .facts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 0.9rem;
+        }
+
+        .fact-card {
+            border-radius: 16px;
+            border: 1px solid var(--border-soft);
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.08), rgba(15, 23, 42, 0.95));
+            padding: 0.7rem 0.75rem;
+        }
+
+        .fact-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.15rem;
+        }
+
+        .fact-value {
+            font-size: 0.9rem;
+        }
+
+        .fact-value strong {
+            color: var(--accent-2);
+        }
+
+        .fact-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        .conservation {
+            border-radius: 24px;
+            border: 1px solid var(--border-soft);
+            background:
+                radial-gradient(circle at top right, rgba(64, 248, 255, 0.18), transparent 60%),
+                rgba(7, 12, 24, 0.96);
+            padding: 1.4rem;
+            margin-bottom: 2rem;
+            scroll-margin-top: 120px; /* Offset for sticky header */
+        }
+
+        .conservation-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.4rem;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.18rem 0.7rem;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-muted);
+        }
+
+        .badge.critical {
+            border-color: rgba(248, 113, 113, 0.9);
+            color: #fecaca;
+            background: rgba(30, 7, 15, 0.9);
+        }
+
+        .badge.protect {
+            border-color: rgba(45, 212, 191, 0.9);
+            color: #a5f3fc;
+            background: rgba(4, 30, 30, 0.9);
+        }
+
+        .conservation-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.3fr);
+            gap: 1.1rem;
+        }
+
+        .conservation-grid h3 {
+            font-size: 1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .conservation-grid p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        ul.checklist {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.4rem;
+        }
+
+        ul.checklist li {
+            font-size: 0.82rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.4rem;
+            margin-bottom: 0.25rem;
+        }
+
+        ul.checklist li span {
+            font-size: 0.9rem;
+            color: var(--safe);
+        }
+
+        /* FOOTER AREA */
+        footer.bottom-footer {
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-soft);
+        }
+
+        footer.bottom-footer .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Connect Card */
+        .connect-card {
+            background: rgba(10, 12, 25, 0.8);
+            border: 1px solid var(--border-soft);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .connect-card h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .connect-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .btn-transmit {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-family: "Inter", sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-transmit:hover {
+            background: #5a6fd6;
+            transform: translateY(-2px);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+            .tab-content.grid-2,
+            .conservation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+                gap: 1rem;
+                border-radius: 16px; /* rounded rect on mobile */
+                top: 0.5rem;
+            }
+            .hero {
+                padding: 1.2rem;
+            }
+            .page {
+                padding-inline: 1rem;
+            }
+            .connect-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="starfield"></canvas>
+    <div class="noise-overlay"></div>
+    
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="page">
+        <header>
+            <div class="logo">
+                <span class="logo-tag">&lt;Akshaj&nbsp;Goel /&gt;</span>
+                <span class="logo-text">Andaman &amp; Nicobar • Flora &amp; Fauna</span>
+            </div>
+            <nav>
+                <a href="#flora" class="active"><span class="dot"></span>Flora</a>
+                <a href="#fauna"><span class="dot"></span>Fauna</a>
+                <a href="#conservation"><span class="dot"></span>Conservation</a>
+                <a href="https://aksweb.me" class="btn-home">← Back to Home</a>
+            </nav>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero" id="top">
+            <div>
+                <div class="hero-kicker">
+                    <span class="badge">Class 10 Project</span>
+                    <span>Interactive Poster • Geography</span>
+                </div>
+                <h1 class="hero-title">
+                    Life of the <span class="gradient">Andaman &amp; Nicobar</span> Islands
+                </h1>
+                <p class="hero-sub">
+                    A quick, interactive look at the rainforests, coral reefs, and rare species that make these islands one of India’s most unique biodiversity hotspots. Perfect for presenting in class.
+                </p>
+                <div class="hero-meta">
+                    <div class="meta-pill">
+                        🌿 <strong>2200+</strong>&nbsp;plant species (many endemic)
+                    </div>
+                    <div class="meta-pill">
+                        🐾 <strong>9100+</strong>&nbsp;faunal species with high endemism
+                    </div>
+                    <div class="meta-pill">
+                        🐢 Leatherback turtle, dugong, Nicobar megapode &amp; more
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-grid">
+                    <div class="hero-img-main">
+                        <img src="https://i0.wp.com/shankarraman.in/wp-content/uploads/2024/01/49588-andamans_dsc_1031.jpg?resize=700%2C447&ssl=1" alt="Evergreen forest of Andaman & Nicobar" />
+                        <div class="hero-tag"><strong>Tropical evergreen forests</strong> with mangroves &amp; rich undergrowth</div>
+                    </div>
+                    <div class="hero-img-side">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Underwater_World.jpg/500px-Underwater_World.jpg" alt="Coral reef and fish in Andaman Sea" />
+                        <div class="hero-tag"><strong>Coral reefs</strong> shelter colorful fish, turtles &amp; reef sharks</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLORA PANEL -->
+        <section class="panel" id="flora">
+            <div class="panel-header">
+                <div>
+                    <h2 class="panel-title">Flora of Andaman &amp; Nicobar</h2>
+                    <p class="panel-sub">
+                        Dense tropical evergreen forests, mangroves, littoral vegetation, and rare plants form the base of all life in these islands.
+                    </p>
+                </div>
+                <div class="tab-buttons" data-tab-group="flora-tabs">
+                    <button class="active" data-tab="forests">Forests &amp; Trees</button>
+                    <button data-tab="mangroves">Mangroves &amp; Coast</button>
+                    <button data-tab="special">Unique Plants</button>
+                </div>
+            </div>
+
+            <!-- Forests tab -->
+            <div class="tab-content grid-2 active" data-tab="forests" data-tab-group="flora-tabs">
+                <div class="tab-text">
+                    <div class="tagline">Tropical evergreen backbone</div>
+                    <h3>Rainforests, timber trees &amp; rich undergrowth</h3>
+                    <p>
+                        Most of the Andaman &amp; Nicobar Islands are covered by tropical evergreen and semi-evergreen forests, with tall canopy trees, dense undergrowth, and multiple layers of vegetation.[web:15][web:16]
+                    </p>
+                    <p>
+                        Valuable timber species like Andaman padauk and various hardwoods grow here, along with palms, bamboo, ferns, and orchids that thrive in the warm, humid climate.[web:16][web:18]
+                    </p>
+                    <div class="pill-row">
+                        <span class="pill em">Tropical evergreen forests</span>
+                        <span class="pill">Semi-evergreen &amp; moist deciduous patches</span>
+                        <span class="pill">Orchids, ferns &amp; climbers</span>
+                        <span class="pill">Timber trees (Padauk, etc.)</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="mini-label">Visual references</div>
+                    <div class="image-grid">
+                        <div class="image-card">
+                            <img src="https://vikalpsangam.org/wp-content/uploads/2021/04/wild-about-plants-1-754x1024.jpg" alt="Dense evergreen forest in Andaman" />
+                            <div class="chip"><strong>Evergreen canopy</strong> – multi-layered forest</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://idyllic.wordpress.com/wp-content/uploads/2023/08/0b192-padauk-tree-trees-andaman-islands-india-36429418.jpg" alt="Andaman Padauk tree" />
+                            <div class="chip"><strong>Andaman padauk</strong> – iconic red timber tree</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://images.newscientist.com/wp-content/uploads/2022/10/05214013/SEI_128225030.jpg?crop=4:3" alt="Wild orchid in rainforest" />
+                            <div class="chip"><strong>Wild orchids</strong> in moist forest</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mangroves tab -->
+            <div class="tab-content grid-2" data-tab="mangroves" data-tab-group="flora-tabs">
+                <div class="tab-text">
+                    <div class="tagline">Where land meets sea</div>
+                    <h3>Mangroves, littoral forests &amp; sandy beaches</h3>
+                    <p>
+                        Along creeks, estuaries, and sheltered coasts, mangrove forests stabilize the shoreline, trap sediments, and provide nurseries for fish, crabs, and other marine life.[web:16][web:20]
+                    </p>
+                    <p>
+                        Littoral (coastal) vegetation includes pandanus, casuarina, and hardy shrubs that can tolerate salt spray, wind, and shifting sands on beaches and dunes.[web:20]
+                    </p>
+                    <div class="pill-row">
+                        <span class="pill em">Mangroves along creeks &amp; bays</span>
+                        <span class="pill">Pandanus &amp; coastal palms</span>
+                        <span class="pill">Casuarina on sandy shores</span>
+                        <span class="pill">Nursery grounds for fish &amp; prawns</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="mini-label">Visual references</div>
+                    <div class="image-grid">
+                        <div class="image-card">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Mangroves_at_sunset.jpg" alt="Mangrove roots in shallow water" />
+                            <div class="chip"><strong>Mangroves</strong> – tangled roots, calm creeks</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://t3.ftcdn.net/jpg/16/85/67/06/360_F_1685670617_NpmGDfoAfocmIWtmVZzZuyBSq8NxEpSE.jpg" alt="Pandanus near a tropical beach" />
+                            <div class="chip"><strong>Pandanus</strong> on sandy beach edges</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://thumbs.dreamstime.com/b/rocky-beach-hdr-11187468.jpg" alt="Littoral forest by the sea" />
+                            <div class="chip"><strong>Littoral forest</strong> facing the sea</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special plants tab -->
+            <div class="tab-content grid-2" data-tab="special" data-tab-group="flora-tabs">
+                <div class="tab-text">
+                    <div class="tagline">Endemic &amp; rare species</div>
+                    <h3>Plants found only in these islands</h3>
+                    <p>
+                        The islands host many endemic plant species, including Andaman padauk and several palms and shrubs restricted to this region.[web:15][web:18]
+                    </p>
+                    <p>
+                        Rare plants like the Andaman pitcher plant, a carnivorous species, and wild orchids highlight how isolation has allowed unique flora to evolve here.[web:21]
+                    </p>
+                    <div class="pill-row">
+                        <span class="pill em">Endemic trees &amp; palms</span>
+                        <span class="pill">Andaman pitcher plant (carnivorous)</span>
+                        <span class="pill">Wild orchids &amp; ferns</span>
+                        <span class="pill danger">Many species are vulnerable to habitat loss</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="mini-label">Visual references</div>
+                    <div class="image-grid">
+                        <div class="image-card">
+                            <img src="https://thumbs.dreamstime.com/b/clear-bright-shot-exotic-beautiful-pitcher-carnivorous-bug-eating-plant-238960930.jpg" alt="Pitcher plant" />
+                            <div class="chip"><strong>Pitcher plant</strong> – insect-trapping leaves</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://thumbs.dreamstime.com/b/beautiful-landscape-palm-trees-sea-andaman-nicobar-islands-india-beautiful-landscape-palm-trees-sea-120003331.jpg" alt="Palm tree in Nicobar" />
+                            <div class="chip"><strong>Endemic palms</strong> in coastal forests</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://images.pexels.com/photos/27981186/pexels-photo-27981186/free-photo-of-a-mossy-green-plant-with-ferns-growing-on-it.jpeg" alt="Fern in rainforest undergrowth" />
+                            <div class="chip"><strong>Ferns</strong> in moist undergrowth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAUNA PANEL -->
+        <section class="panel" id="fauna">
+            <div class="panel-header">
+                <div>
+                    <h2 class="panel-title">Fauna of Andaman &amp; Nicobar</h2>
+                    <p class="panel-sub">
+                        From endemic mammals and colorful birds to coral reefs, turtles, and reef sharks, the islands support over nine thousand animal species.
+                    </p>
+                </div>
+                <div class="tab-buttons" data-tab-group="fauna-tabs">
+                    <button class="active" data-tab="land">Land Animals &amp; Birds</button>
+                    <button data-tab="marine">Marine Life</button>
+                    <button data-tab="protected">Protected Species</button>
+                </div>
+            </div>
+
+            <!-- Land fauna tab -->
+            <div class="tab-content grid-2 active" data-tab="land" data-tab-group="fauna-tabs">
+                <div class="tab-text">
+                    <div class="tagline">Endemic mammals &amp; rich birdlife</div>
+                    <h3>Mammals, reptiles &amp; 270+ bird species</h3>
+                    <p>
+                        The islands host about 46 species of mammals, including endemics like the Andaman wild pig, Nicobar flying fox, Andaman horseshoe bat, and several shrews and tree shrews.[web:15][web:18][web:21]
+                    </p>
+                    <p>
+                        Over 270 bird species occur here, with around 90 endemic forms such as the Nicobar pigeon, Andaman woodpecker, Andaman drongo, and the Nicobar megapode that builds large nest mounds on the ground.[web:17][web:21][web:22]
+                    </p>
+                    <div class="pill-row">
+                        <span class="pill em">Andaman wild pig &amp; Nicobar flying fox</span>
+                        <span class="pill">Nicobar tree shrew &amp; horseshoe bat</span>
+                        <span class="pill">Endemic birds: Nicobar pigeon, woodpeckers</span>
+                        <span class="pill">Reptiles: pit vipers, day geckos, crocodiles</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="mini-label">Visual references</div>
+                    <div class="image-grid">
+                        <div class="image-card">
+                            <img src="https://s3.animalia.bio/animals/photos/full/original/xpwaVZcAok18xHVP1RuL.webp" alt="Nicobar pigeon" />
+                            <div class="chip"><strong>Nicobar pigeon</strong> – closest living relative of the dodo</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://www.rekoforest.org/wp-content/uploads/2021/10/rer-large-bat.jpg" alt="Flying fox bat" />
+                            <div class="chip"><strong>Flying fox</strong> – large fruit bat</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://a-z-animals.com/media/2023/03/shutterstock_2158234591.jpg" alt="Saltwater crocodile" />
+                            <div class="chip"><strong>Saltwater crocodile</strong> in creeks</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marine tab -->
+            <div class="tab-content grid-2" data-tab="marine" data-tab-group="fauna-tabs">
+                <div class="tab-text">
+                    <div class="tagline">Underwater diversity</div>
+                    <h3>Coral reefs, turtles, sharks &amp; dugongs</h3>
+                    <p>
+                        The surrounding seas support vibrant coral reefs with over 200 coral species and more than 1,300 species of molluscs and echinoderms, plus a huge variety of reef fish.[web:17][web:19]
+                    </p>
+                    <p>
+                        Larger marine animals include dugongs (the state animal), sea turtles such as leatherback, green, hawksbill and olive ridley, dolphins, whales, and several reef shark species.[web:19][web:21]
+                    </p>
+                    <div class="pill-row">
+                        <span class="pill em">Coral reefs &amp; seagrass beds</span>
+                        <span class="pill">Dugong (sea cow) – state animal</span>
+                        <span class="pill">Leatherback, green &amp; hawksbill turtles</span>
+                        <span class="pill">Reef sharks, dolphins &amp; colorful reef fish</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="mini-label">Visual references</div>
+                    <div class="image-grid">
+                        <div class="image-card">
+                            <img src="https://static.myconnect.ae/-/media/yasconnect/project/swad/stories/meet-the-dugongs/dungong-06.jpg" alt="Dugong in seagrass" />
+                            <div class="chip"><strong>Dugong</strong> grazing in seagrass meadows</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://explore-qa.s3.eu-west-1.amazonaws.com/medialibraries/explore/blog-images/turtle-in-maldives-shutterstock_268768454-(1).jpg?ext=.jpg" alt="Sea turtle swimming over coral" />
+                            <div class="chip"><strong>Sea turtle</strong> nesting &amp; feeding</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://s3.animalia.bio/animals/photos/medium/original/carcharhinus-melanopterus-261420865.webp?id=9cb6d5f357b656038533a6372e4a6e13" alt="Reef shark over coral reef" />
+                            <div class="chip"><strong>Reef shark</strong> patrolling coral slopes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protected species tab -->
+            <div class="tab-content grid-2" data-tab="protected" data-tab-group="fauna-tabs">
+                <div class="tab-text">
+                    <div class="tagline">Endangered &amp; endemic</div>
+                    <h3>Why conservation here really matters</h3>
+                    <p>
+                        Many species in these islands are listed as vulnerable or endangered, including the dugong, Nicobar megapode, leatherback turtle, and several endemic mammals and reptiles.[web:20][web:21]
+                    </p>
+                    <p>
+                        Because a large share of the fauna is endemic, losing habitat or disturbing nesting beaches and coral reefs can mean global extinction for some species.[web:17][web:25]
+                    </p>
+                    <div class="pill-row">
+                        <span class="pill danger">Dugong – vulnerable</span>
+                        <span class="pill danger">Leatherback turtle – globally threatened</span>
+                        <span class="pill danger">Nicobar megapode – range restricted</span>
+                        <span class="pill">High endemism = high responsibility</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="mini-label">Visual references</div>
+                    <div class="image-grid">
+                        <div class="image-card">
+                            <img src="https://cdn.britannica.com/89/98189-050-146397AA/leatherback-sea-turtle-eggs-Trinidad-Grande-Riviere.jpg" alt="Leatherback sea turtle" />
+                            <div class="chip"><strong>Leatherback turtle</strong> on nesting beach</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://res.cloudinary.com/roundglass/image/upload/v1641471594/rg/collective/media/bw2oyt6fczxav958u3hx.jpg" alt="Nicobar megapode bird" />
+                            <div class="chip"><strong>Nicobar megapode</strong> &amp; its nest mound</div>
+                        </div>
+                        <div class="image-card">
+                            <img src="https://platform.vox.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/8365681/Pasted_image_at_2017_04_18_03_43_PM.png?quality=90&strip=all&crop=0" alt="Bleached coral reef" />
+                            <div class="chip"><strong>Coral stress</strong> from warming &amp; pollution</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick facts bar -->
+            <div style="margin-top: 1.2rem;">
+                <div class="facts-row">
+                    <div class="fact-card">
+                        <div class="fact-label">Biodiversity count</div>
+                        <div class="fact-value"><strong>9100+ animal species</strong> recorded in the islands</div>
+                        <div class="fact-note">Around 1,000+ are endemic to this region.[web:15][web:27]</div>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-label">Bird diversity</div>
+                        <div class="fact-value"><strong>270+ bird species</strong>, ~90 endemic</div>
+                        <div class="fact-note">Important stopover for some migratory birds.[web:17][web:22]</div>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-label">Protected Areas</div>
+                        <div class="fact-value"><strong>9 national parks</strong> &amp; 96 sanctuaries</div>
+                        <div class="fact-note">Plus the Great Nicobar Biosphere Reserve.[web:23][web:20]</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONSERVATION -->
+        <section class="conservation" id="conservation">
+            <div class="conservation-header">
+                <div>
+                    <h2 class="panel-title">Conservation &amp; Protected Areas</h2>
+                    <p class="panel-sub">
+                        Large parts of the islands are protected as national parks, wildlife sanctuaries, and a biosphere reserve to safeguard fragile ecosystems.
+                    </p>
+                </div>
+                <div>
+                    <div class="badge-row">
+                        <span class="badge critical">Threats: habitat loss, climate change, tourism pressure</span>
+                        <span class="badge protect">Protection: national parks, biosphere reserve, coastal regulations</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="conservation-grid">
+                <div>
+                    <h3>Great Nicobar Biosphere Reserve</h3>
+                    <p>
+                        The Great Nicobar Biosphere Reserve covers most of Great Nicobar Island and includes Campbell Bay and Galathea National Parks as its core areas.[web:20][web:29]
+                    </p>
+                    <p>
+                        It protects tropical evergreen forests, mangroves, coral reefs, and key species like the Nicobar megapode, Nicobar macaque, Nicobar tree shrew, saltwater crocodile, and nesting leatherback turtles.[web:20][web:29]
+                    </p>
+                    <ul class="checklist">
+                        <li><span>✔</span> Core, buffer &amp; transition zones for sustainable use</li>
+                        <li><span>✔</span> Focus on endemic and endangered species</li>
+                        <li><span>✔</span> Protects both land and marine habitats</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Why this matters for India</h3>
+                    <p>
+                        Andaman &amp; Nicobar act as a biodiversity bridge between the Indian, Indo‑Chinese and Indo‑Malayan regions, adding unique species and ecosystems to India’s natural heritage.[web:25][web:26]
+                    </p>
+                    <p>
+                        For students, these islands are an excellent case study of how forests, coasts, and oceans are linked—and why conservation has to consider local people, wildlife, and climate together.[web:20][web:24]
+                    </p>
+                    <ul class="checklist">
+                        <li><span>★</span> Use this page as an interactive poster in class</li>
+                        <li><span>★</span> Scroll through tabs to explain flora, fauna &amp; conservation</li>
+                        <li><span>★</span> Add your own notes or quiz questions below if needed</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Connect Card -->
+        <div class="connect-card">
+            <h2>Initialize Connection</h2>
+            <p>Whether you want to discuss Python architecture, MUN strategy, or just say hello. My inbox is open.</p>
+            <a href="mailto:contact@aksweb.me" style="text-decoration:none;">
+                <button class="btn-transmit">Transmit Message</button>
+            </a>
+            <div class="social-icons">
+                <a href="https://github.com/aksgamigg" class="social-icon" target="_blank">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+                </a>
+                <a href="mailto:contact@aksweb.me" class="social-icon">
+                   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </a>
+                <a href="#" class="social-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <footer class="bottom-footer">
+            <div class="footer-content">
+                <p>&copy; 2025 Akshaj Goel. Code is Poetry.</p>
+                <p style="opacity: 0.6;">Built with raw HTML, CSS, & Vanilla JS.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Starfield ---
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            generateStars();
+        }
+        function generateStars() {
+            const count = Math.floor((canvas.width + canvas.height) / 8);
+            stars = [];
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1.3 + 0.2,
+                    a: Math.random() * 0.6 + 0.2,
+                    tw: Math.random() * 0.02 + 0.005
+                });
+            }
+        }
+        function drawStars(time) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let s of stars) {
+                const flicker = Math.sin(time * s.tw) * 0.3 + 0.7;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(148, 163, 184, ${s.a * flicker})`;
+                ctx.fill();
+            }
+            requestAnimationFrame(drawStars);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        requestAnimationFrame(drawStars);
+
+        // --- FIXED CURSOR ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            cursorDot.style.left = x + 'px';
+            cursorDot.style.top = y + 'px';
+            
+            cursorOutline.animate({
+                left: x + 'px',
+                top: y + 'px'
+            }, { duration: 150, fill: "forwards" });
+        });
+
+        document.querySelectorAll('a, button, .image-card, .tab-buttons button, .social-icon').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        // --- TABS ---
+        function setupTabs() {
+            const groups = document.querySelectorAll('.tab-buttons');
+            groups.forEach(group => {
+                const tabGroupName = group.getAttribute('data-tab-group');
+                const buttons = group.querySelectorAll('button');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const target = btn.getAttribute('data-tab');
+                        buttons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.querySelectorAll(`.tab-content[data-tab-group="${tabGroupName}"]`).forEach(tc => {
+                            if (tc.getAttribute('data-tab') === target) {
+                                tc.classList.add('active');
+                            } else {
+                                tc.classList.remove('active');
+                            }
+                        });
+                    });
+                });
+            });
+        }
+        setupTabs();
+
+        // --- SCROLL ACTIVE NAV ---
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
+        const sections = Array.from(document.querySelectorAll('section[id]'));
+
+        window.addEventListener('scroll', () => {
+            // Adjust offset for sticky header
+            const scrollPos = window.scrollY + 150;
+            let current = null;
+            for (const sec of sections) {
+                if (scrollPos >= sec.offsetTop && scrollPos < sec.offsetTop + sec.offsetHeight) {
+                    current = sec.id;
+                }
+            }
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href').replace('#', '');
+                link.classList.toggle('active', href === current);
+            });
+        });
+    </script>
+</body>
+</html>
