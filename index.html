@@ -969,7 +969,7 @@
                         <span class="stat-label">Grade Student</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-value" id="project-counter">4</span>
+                        <span class="stat-value" id="project-counter">5</span>
                         <span class="stat-label">Deployed Projects</span>
                     </div>
                     <div class="stat-card">
@@ -1074,6 +1074,38 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Snake Game Project -->
+                <div class="project-card reveal-up" onclick="openModal('snake')">
+                    <div class="project-image-holder">
+                        <!-- Snake Face SVG -->
+                        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- Snake Head (Circle) -->
+                            <circle cx="32" cy="32" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                            <!-- Left Eye -->
+                            <circle cx="26" cy="28" r="3" fill="currentColor"/>
+                            <!-- Right Eye -->
+                            <circle cx="38" cy="28" r="3" fill="currentColor"/>
+                            <!-- Tongue (forked) -->
+                            <path d="M32 40 L32 46 M30 46 L32 48 M34 46 L32 48" stroke="currentColor" stroke-width="2"/>
+                            <!-- Snake Pattern Dots -->
+                            <circle cx="24" cy="38" r="1.5" fill="currentColor" opacity="0.6"/>
+                            <circle cx="32" cy="36" r="1.5" fill="currentColor" opacity="0.6"/>
+                            <circle cx="40" cy="38" r="1.5" fill="currentColor" opacity="0.6"/>
+                        </svg>
+                    </div>
+                    <div class="project-body">
+                        <h3 class="project-title">Snake.py</h3>
+                        <p class="project-desc">Classic arcade game rebuilt in Python with Tkinter. Features 5 difficulty modes, power-ups, persistent high scores, and interactive web demo.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Tkinter</span>
+                            <span class="tech-tag">Game Dev</span>
+                            <span class="tech-tag">HTML5 Canvas</span>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Project 1 -->
                 <div class="project-card reveal-up" onclick="openModal('edumerge')">
@@ -1512,6 +1544,42 @@
 
                 <div class="modal-links">
                     <a href="https://aksweb.me/Trigonometry" target="_blank" class="btn btn-primary">Visit Website</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snake Game Modal -->
+    <div class="modal-overlay" id="modal-snake">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="project-title">Snake.py</h2>
+                <button class="modal-close" onclick="closeModal('snake')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>A classic arcade game rebuilt from scratch using Python and Tkinter. This project demonstrates core game development concepts including collision detection, state management, and event-driven programming.</p>
+                
+                <h4>Tech Stack</h4>
+                <div class="tech-stack">
+                    <span class="tech-tag">Python 3.6+</span>
+                    <span class="tech-tag">Tkinter/Turtle Graphics</span>
+                    <span class="tech-tag">HTML5 Canvas</span>
+                    <span class="tech-tag">Vanilla JavaScript</span>
+                </div>
+                
+                <h4>Key Features</h4>
+                <ul>
+                    <li>5 difficulty modes (Easy → Impossible)</li>
+                    <li>Dynamic speed adjustments at milestones</li>
+                    <li>Power-up system (Blue, Purple, Green)</li>
+                    <li>Persistent high score tracking</li>
+                    <li>Developer cheat codes for testing</li>
+                    <li>Interactive web demo with Canvas API</li>
+                </ul>
+                
+                <div class="modal-links">
+                    <a href="https://aksweb.me/Snake-Game/" target="_blank" class="btn btn-primary">Visit Website</a>
+                    <a href="https://github.com/aksgamigg/snake-game" target="_blank" class="btn btn-outline">View Code</a>
                 </div>
             </div>
         </div>
