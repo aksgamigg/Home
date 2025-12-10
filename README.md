@@ -2,9 +2,13 @@
 
 > "I don't just write loops; I solve problems."
 
-Welcome to my digital workspace. This repository contains my personal portfolio site and deployed projects—all built with **vanilla HTML5, CSS3, and JavaScript**. No frameworks. Just pure engineering.
+![Status](https://img.shields.io/badge/System-Online-success?style=for-the-badge&logo=linux)
+![MIT Target](https://img.shields.io/badge/Target-MIT-A31F34?style=for-the-badge&logo=mit)
+![Grade](https://img.shields.io/badge/Class-10th-blue?style=for-the-badge)
 
-**🌐 Live Site:** [aksweb.me](https://aksweb.me)
+Welcome to the mainframe. This repository hosts my personal portfolio—a digital workspace built entirely with **Vanilla HTML5, CSS3, and JavaScript**. No frameworks, no bloat, just pure engineering.
+
+**🌐 Access Mainframe:** [aksweb.me](https://aksweb.me)
 
 ---
 
@@ -27,6 +31,15 @@ Home/
 ```
 
 ---
+## ⚡ Core Features
+**The Mainframe (index.html)**
+
+My central hub isn't just a static page; it's an interactive environment featuring:
+- Canvas Starfield Engine 🌌 – Custom-written particle physics background.
+- Terminal Emulator v1.1 💻 – fully functional CLI with command parsing.
+- System Easter Eggs 🕵️‍♂️ – Hidden modes (Matrix, BSOD, Gravity checks).
+- Glassmorphism UI 🧊 – Modern, frosted-glass aesthetic.
+- Performance First 🚀 – Zero external dependencies, single-file delivery.
 
 ## 🎯 What's Inside?
 
@@ -39,30 +52,51 @@ My main portfolio website featuring:
 - **Custom Cursor** 🎨 – Glassmorphism UI elements
 - **Scroll Reveals** ✨ – IntersectionObserver animations
 
-### **Deployed Missions**
+### 🚀 Deployed Missions
 
-#### 1. **Andaman-Nicobar/** 🏝️
-Educational website exploring the biodiversity of the Andaman & Nicobar Islands.
-- Focus: Flora, fauna, coral reefs, mangroves, endemic species
-- Tech: HTML5, CSS3, Responsive design
+**1. Snake.py 🐍**
+
+A reconstruction of the classic arcade game using Python and Tkinter, ported for web demonstration.
+- Tech: Python, Tkinter, Game Loop Logic.
+- Features: 5 Difficulty modes, persistent high scores, power-up system.
+- Link: [aksweb.me/Snake-Game](https://aksweb.me/Snake-Game)
+
+**2. CBSE Trigonometry 📐**
+
+A comprehensive digital guide for Class 10 Mathematics.
+- Tech: Interactive DOM manipulation, SVG Graphics.
+- Features: Dynamic formula sheets, visual proofs, dark-mode UI.
+- Link: [aksweb.me/Trigonometry](https://aksweb.me/Trigonometry)
+
+**3. EduMerge 📄**
+
+A privacy-first desktop automation tool for mass document generation.
+- Problem: Solves "subscription fatigue" for mail merge tools.
+- Solution: Local processing using Python.
+- Link: [aksweb.me/EduMerge-Website](aksweb.me/EduMerge-Website)
+
+**4. Pollution Awareness 🌍**
+
+Data visualization platform tracking New Delhi's Air Quality Index (AQI).
+- Mission: Educating students on PM2.5/PM10 health impacts.
+- Link: [aksweb.me/Pollution-Website](https://aksweb.me/Pollution-Website)
+
+**5. Andaman Biodiversity 🏝️**
+
+Digital encyclopedia of the Andaman & Nicobar Islands.
 - Link: [aksweb.me/Andaman-Nicobar](https://aksweb.me/Andaman-Nicobar)
 
-#### 2. **EduMerge-Website/** 📄
-Landing page for EduMerge—a privacy-first Python mail merge tool.
-- Features: Local processing, no cloud dependencies
-- Tech: HTML5, CSS3, JavaScript
-- Link: [aksweb.me/EduMerge-Website](https://aksweb.me/EduMerge-Website)
-
-#### 3. **EduMerge-Documentation/** 📚
-Complete documentation & technical guide for the EduMerge project.
-- Includes: Setup, usage, API reference, changelog
-- Link: [aksweb.me/EduMerge-Documentation](https://aksweb.me/EduMerge-Documentation)
-
-#### 4. **Pollution-Website/** 🌍
-Interactive data visualization platform for Delhi's air quality crisis.
-- Features: Real-time AQI tracking, health recommendations
-- Tech: HTML5, CSS3, Data visualization
-- Link: [aksweb.me/Pollution-Website](https://aksweb.me/Pollution-Website)
+---
+## 💻 The Terminal & Secrets
+The portfolio features a built-in CLI. Try these commands to unlock hidden system states:
+| Command | Effect | Status |
+|-----------|-----------|-----------|
+| `help` | Lists standard navigation commands | ✅ Active |
+| `matrix` | **[REDACTED]** Overrides CSS with System Green | 🔓 Unlocked |
+| `sudo` | Attempts root access. **(Watch out for the FBI)** | 🔒 Restricted |
+| `destroy` | Triggers a Kernel Panic **(BSOD)** | ⚠️ Dangerous |
+| `do a barrel roll` | Tests viewport gravity physics | 🎡 Fun |
+| `vanilla` | Factory resets the UI theme | 🧹 Utility |
 
 ---
 
@@ -154,4 +188,4 @@ This portfolio is my personal work. Feel free to explore, learn from the code, b
 
 **© 2025 Akshaj Goel. Code is Poetry.**
 
-*Last Updated: 26 November 2025*
+*Last Updated: 11 December 2025*
