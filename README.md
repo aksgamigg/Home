@@ -41,6 +41,8 @@ My central hub isn't just a static page; it's an interactive environment featuri
 - Glassmorphism UI 🧊 – Modern, frosted-glass aesthetic.
 - Performance First 🚀 – Zero external dependencies, single-file delivery.
 
+---
+
 ## 🎯 What's Inside?
 
 ### **index.html** (Portfolio Hub)
