@@ -17,11 +17,17 @@ Welcome to the mainframe. This repository hosts my personal portfolio—a digita
 ```
 Home/
 ├── index.html                    # Main portfolio website
+├── Coffee-Machine/               # Vending machine simulator landing
+│   └── index.html
 ├── Andaman-Nicobar/              # Flora & fauna educational site
 │   └── index.html
 ├── EduMerge-Website/             # Project landing page
 │   └── index.html
 ├── EduMerge-Documentation/        # Complete project docs
+│   └── index.html
+├── Snake-Game/                   # Classic arcade game
+│   └── index.html
+├── Trigonometry/                 # CBSE Class 10 guide
 │   └── index.html
 ├── Pollution-Website/            # Delhi AQI awareness platform
 │   └── index.html
@@ -56,34 +62,43 @@ My main portfolio website featuring:
 
 ### 🚀 Deployed Missions
 
-**1. Snake.py 🐍**
+**1. CoffeeMachine ☕** (NEW)
+
+A fully-featured Python desktop vending machine simulator with realistic resource management and payment processing.
+- Tech: Python 3.8+, Tkinter, ttkbootstrap, Pillow
+- Features: 3 beverage options, coin/bill payment system, dynamic resource tracking, auto-diagnostics
+- Learning: OOP design, GUI development, state management, real-world architecture
+- Version: v0.1.0-alpha
+- Link: [aksweb.me/Coffee-Machine](https://aksweb.me/Coffee-Machine)
+
+**2. Snake.py 🐍**
 
 A reconstruction of the classic arcade game using Python and Tkinter, ported for web demonstration.
 - Tech: Python, Tkinter, Game Loop Logic.
 - Features: 5 Difficulty modes, persistent high scores, power-up system.
 - Link: [aksweb.me/Snake-Game](https://aksweb.me/Snake-Game)
 
-**2. CBSE Trigonometry 📐**
+**3. CBSE Trigonometry 📐**
 
 A comprehensive digital guide for Class 10 Mathematics.
 - Tech: Interactive DOM manipulation, SVG Graphics.
 - Features: Dynamic formula sheets, visual proofs, dark-mode UI.
 - Link: [aksweb.me/Trigonometry](https://aksweb.me/Trigonometry)
 
-**3. EduMerge 📄**
+**4. EduMerge 📄**
 
 A privacy-first desktop automation tool for mass document generation.
 - Problem: Solves "subscription fatigue" for mail merge tools.
 - Solution: Local processing using Python.
-- Link: [aksweb.me/EduMerge-Website](aksweb.me/EduMerge-Website)
+- Link: [aksweb.me/EduMerge-Website](https://aksweb.me/EduMerge-Website)
 
-**4. Pollution Awareness 🌍**
+**5. Pollution Awareness 🌍**
 
 Data visualization platform tracking New Delhi's Air Quality Index (AQI).
 - Mission: Educating students on PM2.5/PM10 health impacts.
 - Link: [aksweb.me/Pollution-Website](https://aksweb.me/Pollution-Website)
 
-**5. Andaman Biodiversity 🏝️**
+**6. Andaman Biodiversity 🏝️**
 
 Digital encyclopedia of the Andaman & Nicobar Islands.
 - Link: [aksweb.me/Andaman-Nicobar](https://aksweb.me/Andaman-Nicobar)
@@ -94,6 +109,7 @@ The portfolio features a built-in CLI. Try these commands to unlock hidden syste
 | Command | Effect | Status |
 |-----------|-----------|-----------|
 | `help` | Lists standard navigation commands | ✅ Active |
+| `coffee` | Opens CoffeeMachine project portal | ☕ New! |
 | `matrix` | **[REDACTED]** Overrides CSS with System Green | 🔓 Unlocked |
 | `sudo` | Attempts root access. **(Watch out for the FBI)** | 🔒 Restricted |
 | `destroy` | Triggers a Kernel Panic **(BSOD)** | ⚠️ Dangerous |
@@ -190,4 +206,4 @@ This portfolio is my personal work. Feel free to explore, learn from the code, b
 
 **© 2025 Akshaj Goel. Code is Poetry.**
 
-*Last Updated: 11 December 2025*
+*Last Updated: 14 December 2025*
