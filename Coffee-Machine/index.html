@@ -237,6 +237,9 @@
         .feature-card:nth-child(4) { animation-delay: 0.4s; }
         .feature-card:nth-child(5) { animation-delay: 0.5s; }
         .feature-card:nth-child(6) { animation-delay: 0.6s; }
+        .feature-card:nth-child(7) { animation-delay: 0.7s; }
+        .feature-card:nth-child(8) { animation-delay: 0.8s; }
+        .feature-card:nth-child(9) { animation-delay: 0.9s; }
 
         .feature-card:hover {
             transform: translateY(-10px);
@@ -488,8 +491,8 @@
         <div class="hero-content">
             <div class="hero-icon">☕</div>
             <h1>CoffeeMachine</h1>
-            <p>A fully-featured Python desktop vending machine simulator. Order espresso, latte, or cappuccino with realistic resource management and payment processing.</p>
-            <p style="font-size: 0.9rem; color: var(--accent-gold);">v0.1.0-alpha</p>
+            <p>A fully-featured Python desktop vending machine simulator. Order espresso, latte, or cappuccino with realistic resource management, voice feedback, employee controls, and built-in diagnostics.</p>
+            <p style="font-size: 0.9rem; color: var(--accent-gold);">v0.2.0-alpha</p>
             <div class="cta-buttons">
                 <a href="#download" class="btn btn-primary">Get Started</a>
                 <a href="https://github.com/aksgamigg/CoffeeMachine" class="btn btn-secondary">View on GitHub</a>
@@ -533,6 +536,21 @@
                     <div class="feature-icon">📚</div>
                     <h3>Learning Resource</h3>
                     <p>Perfect for understanding OOP, GUI development, state management, and real-world application design.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🎤</div>
+                    <h3>Voice Feedback</h3>
+                    <p>Built-in text-to-speech using gTTS and pygame. Machine "speaks" prompts, status updates, and order confirmations.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Employee Mode</h3>
+                    <p>Passcode-protected admin controls. Employees can refill supplies, change access codes, and manage machine state.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">🛠️</div>
+                    <h3>Dependency Installer</h3>
+                    <p>Automated setup wizard. Installs all required Python packages and launches the app with a single click.</p>
                 </div>
             </div>
         </div>
@@ -593,6 +611,16 @@
                     <div style="font-size: 2.5rem;">🖼️</div>
                     <div class="tech-name">Pillow</div>
                     <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Image handling</p>
+                </div>
+                <div class="tech-item reveal">
+                    <div style="font-size: 2.5rem;">🎤</div>
+                    <div class="tech-name">gTTS</div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Text-to-speech</p>
+                </div>
+                <div class="tech-item reveal">
+                    <div style="font-size: 2.5rem;">🔊</div>
+                    <div class="tech-name">Pygame</div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Audio playback</p>
                 </div>
             </div>
         </div>
