@@ -1604,7 +1604,34 @@
                 }
             });
         });
-        /* ============ 3. MODAL SYSTEM ============ */
+
+        /* ============ 3. CUSTOM CURSOR ============ */
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+
+        // Updated: don’t run cursor tracking on touch devices
+        const canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+
+        if (canHover && cursorDot && cursorOutline) {
+            window.addEventListener('mousemove', function(e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                cursorDot.style.left = posX + 'px';
+                cursorDot.style.top = posY + 'px';
+
+                cursorOutline.animate(
+                    { left: posX + 'px', top: posY + 'px' },
+                    { duration: 500, fill: 'forwards' }
+                );
+            });
+
+            document.querySelectorAll('a, button, .project-card').forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+        }
+
+        /* ============ 4. MODAL SYSTEM ============ */
         function openModal(id) {
             document.getElementById('modal-' + id).classList.add('open');
             document.body.style.overflow = 'hidden';
@@ -1624,7 +1651,7 @@
             });
         });
 
-        /* ============ 4. SCROLL REVEAL ============ */
+        /* ============ 5. SCROLL REVEAL ============ */
         const observerOptions = { threshold: 0.1 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -1642,7 +1669,7 @@
             else nav.classList.remove('scrolled');
         });
 
-        /* ============ 5. KONAMI CODE (Easter Egg) ============ */
+        /* ============ 6. KONAMI CODE (Easter Egg) ============ */
         const konamiCode = ['s', 'e', 'c', 'r', 'e', 't'];
         let konamiIndex = 0;
 
