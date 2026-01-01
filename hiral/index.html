@@ -8,20 +8,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Icons for Music Player -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
             /* NEON PINK/RED PALETTE */
             --neon-pink: #ff0055;
             --neon-red: #ff2a2a;
             --neon-gold: #ffcc00;
-            --bg-dark: #1a0505; /* Very dark red/black background */
+            --bg-dark: #1a0505; 
             --grid-color: rgba(255, 42, 42, 0.2);
             --card-bg: rgba(40, 10, 10, 0.85);
         }
 
         body {
             background-color: var(--bg-dark);
-            /* Red Retro Grid Background */
             background-image: 
                 linear-gradient(var(--grid-color) 1px, transparent 1px),
                 linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
@@ -40,12 +42,12 @@
         /* --- BALLOONS ANIMATION --- */
         .balloon {
             position: absolute;
-            bottom: -150px; /* Start well below the screen */
+            bottom: -150px;
             width: 40px;
             height: 50px;
             border-radius: 50%;
             opacity: 0.8;
-            animation: floatUp linear forwards; /* 'forwards' ensures it doesn't reset */
+            animation: floatUp linear forwards;
             z-index: -1;
             box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3);
         }
@@ -75,7 +77,7 @@
             z-index: 10;
             background: rgba(26, 5, 5, 0.98);
             width: 100%;
-            position: fixed; /* Fixed to cover everything */
+            position: fixed;
             top: 0;
             left: 0;
         }
@@ -138,7 +140,7 @@
             box-shadow: 0 0 30px var(--neon-red);
         }
 
-        /* --- MAIN DASHBOARD (Hidden initially) --- */
+        /* --- MAIN DASHBOARD --- */
         #main-dashboard {
             display: none;
             width: 100%;
@@ -178,7 +180,7 @@
         @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
 
         .chat-bubble {
-            background: rgba(255, 0, 85, 0.08); /* Very light pink tint */
+            background: rgba(255, 0, 85, 0.08);
             border: 1px solid var(--neon-pink);
             border-left: 6px solid var(--neon-pink);
             padding: 25px;
@@ -224,13 +226,45 @@
         .stat-val { font-size: 1.8rem; font-weight: bold; color: var(--neon-pink); text-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
         .stat-label { font-size: 0.9rem; opacity: 0.8; margin-top: 5px; color: #ffcccc; }
 
-        /* Music Controls */
-        .music-control {
-            margin-top: 20px;
-            font-size: 0.8rem;
+        /* --- MUSIC PLAYER STYLES --- */
+        .music-player-container {
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--neon-pink);
+            padding: 15px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
+        }
+
+        .music-btn {
+            background: transparent;
+            border: none;
             color: var(--neon-pink);
+            font-size: 1.2rem;
             cursor: pointer;
-            text-decoration: underline;
+            transition: 0.2s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-btn:hover {
+            background: var(--neon-pink);
+            color: white;
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .now-playing {
+            font-size: 0.8rem;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            margin: 0 10px;
         }
 
         /* --- RESPONSIVE ADJUSTMENTS --- */
@@ -301,6 +335,22 @@
             <p style="font-size: 0.7rem; opacity: 0.6; margin-top: 10px; color: #ffcccc;">(Warning: May cause extreme happiness)</p>
         </div>
 
+        <!-- NEW MUSIC PLAYER UI -->
+        <div class="music-player-container">
+            <button class="music-btn" onclick="toggleMusic()">
+                <i class="fas fa-play" id="play-icon"></i>
+            </button>
+            <div class="now-playing">
+                <span>🎵 Birthday Vibes.mp3</span>
+            </div>
+            <button class="music-btn" onclick="adjustVolume(-0.2)">
+                <i class="fas fa-volume-down"></i>
+            </button>
+            <button class="music-btn" onclick="adjustVolume(0.2)">
+                <i class="fas fa-volume-up"></i>
+            </button>
+        </div>
+
         <!-- AUDIO ELEMENT (Hidden) -->
         <audio id="bg-music" loop>
             <source src="blue.mp3" type="audio/mpeg"> 
@@ -310,48 +360,29 @@
 
     <script>
         // --- 1. CONFIGURATION ---
-        // Passwords to unlock the site
         const ALLOWED_PASSWORDS = ["hiral", "bandariya", "1234", "dumbass", "password"];
-        
-        // The message that types out automatically.
         const TYPEWRITER_TEXT = "Hi bandariya🐒,\n\nHappy birthday! Aur ab tu merse officially ek saal badi h, to... Aunty me ye keh rha tha aapka abhi tk ka din kesa gya🤣.\n\nDekh I know I haven't exactly been a good friend or good at staying in touch, but I'm trying to do what's best according to the current situation, sorry.\n\nAur mere dimaag mein abhi abhi ye baat aayi, this is my first ever birthday wish to you🤓.\n\nYou know, when I lost contact with you guys, in 2024, I was confused. I hadn't figured out that it really affected me up until then, why? The reason's completely pathetic, I didn't feel I had any real friends besides you guys, because it was always on and off with them, and then you guys popped in and everything started to get better and better. So thanks for that, you are a really important person in not just my life but for a lot of people, I hope you know that, so never ever feel down because you are an amazing human being.\n\nTune bahut difficulties face kri h apni life mein, and you didn't deserve any of it, well I guess thodi maar to tu deserve krti hogi 🤣. But the most important thing is that you pushed through, even broken or barely standing, but you did your best, and thank you for that. Jab tu dukhi hoti h sab log terko smjhane lgte h, giving you advice and you don't like that, so you end up feeling even worse that nobody gets you, but believe me stop feeling that way, because you're probably the strongest girl I know, and it doesn't mean you have to face everything alone, you have family and a lot of friends.\n\nThank you for everything, I hope you have the most amazing day.\n\n- Tech Support (Me)😎\n\nPS: Hn mene Typwriter waali animation isliye lgayi thi kyuki mujhe lga tha is pure text ko bhi mere messages ki trh ignore krdegi🤣";
 
-        // --- 2. BALLOON GENERATOR (Red/Pink/Gold Edition) ---
+        // --- 2. BALLOON GENERATOR ---
         function createBalloons() {
             const container = document.getElementById('balloon-container');
-            const balloonCount = 5; // Number of balloons per batch
+            const balloonCount = 5;
 
             for (let i = 0; i < balloonCount; i++) {
                 const balloon = document.createElement('div');
                 balloon.classList.add('balloon');
-                
-                // 1. RANDOM HORIZONTAL POSITION (0 to 100% of screen width)
                 balloon.style.left = Math.random() * 100 + 'vw';
-                
-                // 2. RANDOM SPEED (Between 8s and 18s for a smooth float)
                 const duration = Math.random() * 10 + 8;
                 balloon.style.animationDuration = duration + 's';
-                
-                // 3. RANDOM COLOR PICKER
                 const colors = ['#ff0055', '#ff2a2a', '#ffcc00', '#ff99cc'];
                 const randomColor = colors[Math.floor(Math.random() * colors.length)];
                 balloon.style.background = randomColor;
-                
-                // 4. ADD TO DOM
                 container.appendChild(balloon);
-
-                // 5. CLEANUP: Remove balloon after animation finishes to prevent lag
-                setTimeout(() => {
-                    balloon.remove();
-                }, duration * 1000 + 100);
+                setTimeout(() => { balloon.remove(); }, duration * 1000 + 100);
             }
         }
-
-        // Start balloons immediately
         createBalloons();
-        // Add a new batch every 2 seconds for a continuous flow
         setInterval(createBalloons, 2000); 
-
 
         // --- 3. LOGIN LOGIC ---
         function checkPass() {
@@ -360,32 +391,22 @@
                 document.getElementById('login-screen').style.display = 'none';
                 const dash = document.getElementById('main-dashboard');
                 dash.style.display = 'block';
-                // Trigger fade-in animation via CSS class if needed, or just let it appear
                 dash.style.opacity = 0;
                 
-                // Simple JS Fade In
                 let opacity = 0;
                 const timer = setInterval(function () {
-                    if (opacity >= 1){
-                        clearInterval(timer);
-                    }
+                    if (opacity >= 1) clearInterval(timer);
                     dash.style.opacity = opacity;
-                    dash.style.filter = 'alpha(opacity=' + opacity * 100 + ")";
                     opacity += 0.1;
                 }, 50);
                 
-                // Start typing effect
                 setTimeout(typeWriterEffect, 500);
                 
-                // Try to play music if available
-                const audio = document.getElementById('bg-music');
-                if(audio) {
-                    audio.play().catch(e => console.log("Audio play failed (user interaction needed first):", e));
-                }
+                // Attempt to play music automatically
+                toggleMusic();
 
             } else {
                 document.getElementById('error-msg').style.display = 'block';
-                // Shake effect
                 const box = document.querySelector('.cyber-box');
                 box.style.transform = 'translateX(10px)';
                 setTimeout(() => box.style.transform = 'translateX(0)', 100);
@@ -400,22 +421,20 @@
             const cursor = document.querySelector('.cursor');
             let i = 0;
             element.innerHTML = "";
-            
-            // Adjust typing speed here (lower number = faster)
             const speed = 40; 
             
             function type() {
                 if (i < TYPEWRITER_TEXT.length) {
                     if (TYPEWRITER_TEXT.substring(i).startsWith("\n")) {
                         element.innerHTML += "<br>";
-                        i++; // Skip the newline char
+                        i++; 
                     } else {
                         element.innerHTML += TYPEWRITER_TEXT.charAt(i);
                         i++;
                     }
                     setTimeout(type, speed); 
                 } else {
-                    cursor.style.display = 'none'; // Hide cursor when done
+                    cursor.style.display = 'none'; 
                 }
             }
             type();
@@ -432,7 +451,6 @@
             var end = Date.now() + duration;
 
             (function frame() {
-                // Pink and Gold Confetti
                 confetti({
                     particleCount: 7,
                     angle: 60,
@@ -447,11 +465,33 @@
                     origin: { x: 1 },
                     colors: ['#ff0055', '#ffcc00', '#ffffff', '#ff2a2a']
                 });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
+                if (Date.now() < end) requestAnimationFrame(frame);
             }());
+        }
+
+        // --- 6. MUSIC CONTROLS ---
+        function toggleMusic() {
+            const audio = document.getElementById('bg-music');
+            const icon = document.getElementById('play-icon');
+            
+            if (audio.paused) {
+                audio.play().then(() => {
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                }).catch(e => console.log("Audio play prevented:", e));
+            } else {
+                audio.pause();
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        }
+
+        function adjustVolume(change) {
+            const audio = document.getElementById('bg-music');
+            let newVol = audio.volume + change;
+            if (newVol > 1) newVol = 1;
+            if (newVol < 0) newVol = 0;
+            audio.volume = newVol;
         }
     </script>
 </body>
